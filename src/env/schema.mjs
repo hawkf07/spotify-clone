@@ -10,6 +10,8 @@ export const serverSchema = z.object({
   NEXTAUTH_URL: z.string().url(),
   SPOTIFY_CLIENT_ID:z.string(),
   SPOTIFY_CLIENT_SECRET:z.string(),
+  REDIRECT_URL:z.string(),
+  CODE:z.string(),
 });
 
 /**

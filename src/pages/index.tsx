@@ -3,15 +3,16 @@ import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Navbar } from "../components/Navbar";
 import { trpc } from "../utils/trpc";
+import { useEffect } from "react";
 
 const Home: NextPage = () => {
-  const hello = trpc.useQuery([
-    "example.hello",
-    { text: "hello from fikri fadillah" },
-  ]);
-  const name = trpc.useQuery(["example.name", { text: "fikri", age: 12 }]);
-  const data = useSession()
-  console.log(data)
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session?.error === "RefreshAccessTokenError") {
+      signIn(); // Force sign in to hopefully resolve error
+    }
+  }, [session]);
   return (
     <>
       <Head>
