@@ -1,24 +1,30 @@
 import { signIn, useSession, signOut } from "next-auth/react";
+import Link from "next/link";
 import { FC, useEffect, useState } from "react";
 import { trpc } from "../../utils/trpc";
-import {useNavbarStore} from '../../utils/useEventStore'
+import { useNavbarStore } from "../../utils/useEventStore";
 interface NavListInterface {
-  navbarIsOpen?:boolean,
+  navbarIsOpen?: boolean;
 }
 
-const NavList : FC<NavListInterface> = () => {
-  const {data,status} = useSession()
-  const meData = trpc.useQuery(["spotify.me"])
+const NavList: FC<NavListInterface> = () => {
+  const { data, status } = useSession();
+  const meData = trpc.useQuery(["spotify.me"]);
   return (
     <>
-
-      <ul  className="w-full mobile:w-full text-gray-200 justify-around gap-5   flex items-center mobile:flex-col  bg-primary-400  mobile:child:p-3">
+      <ul className="w-full mobile:w-full text-gray-200 justify-around gap-5   flex items-center mobile:flex-col  bg-primary-400  mobile:child:p-3">
         {!data ? (
-          <li className="mobile:w-full hover:bg-blue-600 text-center rounded cursor-pointer"  onClick={() => signIn()}>
+          <li
+            className="mobile:w-full hover:bg-blue-600 text-center rounded cursor-pointer"
+            onClick={() => signIn()}
+          >
             <a href="#">Log In</a>
           </li>
         ) : (
-          <li className="mobile:w-full hover:bg-blue-600 text-center rounded cursor-pointer" onClick={() => signOut()}>
+          <li
+            className="mobile:w-full hover:bg-blue-600 text-center rounded cursor-pointer"
+            onClick={() => signOut()}
+          >
             <a href="#">Log out</a>
           </li>
         )}
@@ -29,9 +35,8 @@ const NavList : FC<NavListInterface> = () => {
           <a href="#">Status</a>
         </li>
         <li className="mobile:w-full uppercase mobile:hidden hover:bg-blue-600 text-center rounded cursor-pointer">
-          <a href="#">{ data&& meData.data?.display_name}</a>
+         <Link href={"/sptfy/me"}><a>{data && meData.data?.display_name}</a></Link>
         </li>
-        
       </ul>
     </>
   );
@@ -39,25 +44,29 @@ const NavList : FC<NavListInterface> = () => {
 
 const Navbar = () => {
   const { data, status } = useSession();
-  const {navbarIsOpen,navbarTogglerhandler} = useNavbarStore()
+  const { navbarIsOpen, navbarTogglerhandler } = useNavbarStore();
   return (
     <>
       <nav className="flex dark:text-white justify-between mobile:justify-between w-full items-center p-7 mobile:p-3  bg-primary-400 h-navbar">
         <header className="text-2xl mobile:text-md mobile:text-white">
-          <a href="#">
-            <h1>LOGO</h1>{" "}
-          </a>
+          <Link href="/">
+            <a >SPTFY</a>
+          </Link>
         </header>
         <div className="mobile:hidden">
-        <NavList navbarIsOpen={navbarIsOpen} />
+          <NavList navbarIsOpen={navbarIsOpen} />
         </div>
         <div className="hidden mobile:flex items-center">
           <p className="cursor-pointer">{data?.user?.name}</p>
-        <button className="mobile:block hidden p-1 px-3 rounded " onClick={() => navbarTogglerhandler()} >=</button>
+          <button
+            className="mobile:block hidden p-1 px-3 rounded "
+            onClick={() => navbarTogglerhandler()}
+          >
+            =
+          </button>
         </div>
-        
       </nav>
-      {navbarIsOpen && <NavList/>}
+      {navbarIsOpen && <NavList />}
     </>
   );
 };
